@@ -3,7 +3,7 @@ from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from ..database import get_db
 from typing import List, Optional
-from sqlalchemy import func
+from sqlalchemy import func, or_
 import json
 
 
@@ -13,15 +13,12 @@ router = APIRouter(
 )
 
 
-# @router.get("/", response_model=List[schemas.Post])
 @router.get("/", response_model=List[schemas.PostOut])
 def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
-    # posts = db.query(models.Post).filter(
-    #     models.Post.title.contains(search)).limit(limit).offset(skip).all()
-
     results = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(
         models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(models.Post.id).filter(
-        models.Post.title.contains(search)).limit(limit).offset(skip).all()
+        or_(func.lower(models.Post.title).contains(func.lower(search)),
+            func.lower(models.Post.content).contains(func.lower(search)))).limit(limit).offset(skip).all()
     # for result in results:
     #     print(result[0].title + " " + str(result[1]))
     result_list = []
@@ -31,25 +28,31 @@ def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.
         result_dict["votes"] = result[1]
         result_list.append(result_dict)
 
-    # post_dicts = [post.__dict__ for post in results]
-    # json_posts = json.dumps(post_dicts, default=str)
-
-    # print(json_posts)
-    # print("Type of result" + str(type(results)))
-    # for post in results:
-    #     print(dict(post))
-
     return result_list
+
+
+def create_notification(db: Session, sender_id: int, recipient_id: int, message: str):
+    notification = models.Notification(
+        sender_id=sender_id,
+        recipient_id=recipient_id,
+        message=message,
+    )
+    db.add(notification)
+    db.commit()
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    # cursor.execute(
-    #     """ INSERT into posts (title,content,published) VALUES (%s,%s,%s) RETURNING * """, (post.title, post.content, post.published))
-    # new_post = cursor.fetchone()
-    # conn.commit()
     new_post = models.Post(
         owner_id=current_user.id, **post.dict())
+
+    # Send notifications to other users
+    users = db.query(models.User).filter(
+        models.User.id != current_user.id).all()
+    message = f"{current_user.email} has created a new post: {new_post.title}"
+    for user in users:
+        create_notification(db, current_user.id, user.id, message)
+
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
