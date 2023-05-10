@@ -38,3 +38,9 @@ def test_incorrect_login(test_user, client):
 
     assert res.status_code == 403
     assert res.json().get('detail') == 'Invalid Credentials'
+
+
+def test_user_profile(authorized_client, test_user):
+    res = authorized_client.get("/users/userProfile")
+    user = schemas.UserProfile(**res.json())
+    assert user.email == test_user['email']
