@@ -140,3 +140,11 @@ def test_update_post_non_exist(authorized_client, test_user, test_posts):
         f"/posts/8000000", json=data)
 
     assert res.status_code == 404
+
+
+def test_create_post_with_notification(authorized_client, test_create_notification, test_user, test_user2):
+    print(test_create_notification[0].message)
+    assert len(test_create_notification) == 1
+    assert test_create_notification[0].sender_id == test_user["id"]
+    assert test_create_notification[0].recipient_id == test_user2['id']
+    assert test_create_notification[0].message == f"{test_user['email']} has created a new post: test title"

@@ -113,3 +113,21 @@ def test_posts(test_user, session, test_user2):
 
     posts = session.query(models.Post).all()
     return posts
+
+
+@pytest.fixture
+def test_posts_for_notification(authorized_client):
+    res = authorized_client.post(
+        "/posts/", json={"title": "test title", "content": "test content", "published": True})
+    created_post = schemas.Post(**res.json())
+    return created_post
+
+
+@pytest.fixture
+def test_create_notification(authorized_client, session, test_user2):
+    res = authorized_client.post(
+        "/posts/", json={"title": "test title", "content": "test content", "published": True})
+    created_post = schemas.Post(**res.json())
+    notifications = session.query(models.Notification).filter_by(
+        recipient_id=test_user2['id']).all()
+    return notifications
