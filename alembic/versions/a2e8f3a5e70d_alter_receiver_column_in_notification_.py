@@ -17,12 +17,12 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.alter_column('notification', 'recipient_id',
-                    new_column_name=sa.Column('receiver_id', sa.Integer))
+    # op.alter_column('notification', 'recipient_id',
+    #                 new_column_name=sa.Column('receiver_id', sa.Integer))
     pass
 
 
 def downgrade() -> None:
-    op.alter_column('notification', 'receiver_id',
-                    new_column_name=sa.Column('recipient_id', sa.Integer))
+    # op.alter_column('notification', 'receiver_id',
+    #                 new_column_name=sa.Column('recipient_id', sa.Integer))
     pass
