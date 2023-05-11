@@ -18,7 +18,6 @@ jobs:
     services:
       postgres:
         image: postgres
-        container_name: fastapi
         env:
           POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
           POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
