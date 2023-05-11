@@ -43,3 +43,20 @@ def test_vote_unauthorized_user(client, test_posts):
     res = client.post(
         "/vote/", json={"post_id": test_posts[3].id, "dir": 1})
     assert res.status_code == 401
+
+
+# services:
+#   api:
+#     build: .
+#     ports:
+#       - 8000:8000
+
+#     environment:
+#       - DATABASE_HOSTNAME=localhost
+#       - DATABASE_PORT=7878
+#       - DATABASE_PASSWORD=postgres
+#       - DATABASE_NAME=fastapi
+#       - DATABASE_USERNAME=postgres
+#       - SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+#       - ALGORITHM=HS256
+#       - ACCESS_TOKEN_EXPIRE_MINUTES=30
