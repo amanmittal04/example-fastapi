@@ -16,7 +16,6 @@ services:
       - ACCESS_TOKEN_EXPIRE_MINUTES=30
   postgres:
     image: postgres
-    container_name: fastapi
     ports:
       - 7878:5432
     environment:
