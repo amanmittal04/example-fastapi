@@ -1,7 +1,7 @@
 version: "3"
 services:
   api:
-    image: amanmittal04/fastapi:0.1
+    image: amanmittal04/fastapi:latest
     container_name: fastapi
     ports:
       - 8000:8000
