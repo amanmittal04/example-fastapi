@@ -9,11 +9,13 @@ from .database import engine, get_db
 from .routers import post, user, auth, vote
 from .config import settings
 from fastapi.middleware.cors import CORSMiddleware
-
+from .routers.user import scheduler
 
 # models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+scheduler.start()
 
 origins = ["*"]
 

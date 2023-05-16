@@ -15,6 +15,7 @@ class Post(Base):
                         nullable=False, server_default=text('now()'))
     owner_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
+    expiration_time = Column(Integer, nullable=False, server_default='1')
     owner = relationship("User")
 
 

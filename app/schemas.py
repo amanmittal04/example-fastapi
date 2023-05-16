@@ -11,6 +11,7 @@ class PostBase(BaseModel):
 
 
 class PostCreate(PostBase):
+    expiration_time: int
     pass
 
 
