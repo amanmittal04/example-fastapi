@@ -37,14 +37,14 @@ def test_get_one_post(authorized_client, test_posts):
     assert post.Post.title == test_posts[0].title
 
 
-@pytest.mark.parametrize("title, content, published", [
-    ("awesome new title", "awesome new content", True),
-    ("favorite pizza", "i love pepperoni", False),
-    ("tallest skyscrapers", "wahoo", True),
+@pytest.mark.parametrize("title, content, published,expiration_time", [
+    ("awesome new title", "awesome new content", True, 1),
+    ("favorite pizza", "i love pepperoni", False, 1),
+    ("tallest skyscrapers", "wahoo", True, 1),
 ])
-def test_create_post(authorized_client, test_user, test_posts, title, content, published):
+def test_create_post(authorized_client, test_user, test_posts, title, content, published, expiration_time):
     res = authorized_client.post(
-        "/posts/", json={"title": title, "content": content, "published": published})
+        "/posts/", json={"title": title, "content": content, "published": published, "expiration_time": expiration_time})
 
     created_post = schemas.Post(**res.json())
     assert res.status_code == 201
@@ -56,7 +56,7 @@ def test_create_post(authorized_client, test_user, test_posts, title, content, p
 
 def test_create_post_default_published_true(authorized_client, test_user, test_posts):
     res = authorized_client.post(
-        "/posts/", json={"title": "arbitrary title", "content": "random"})
+        "/posts/", json={"title": "arbitrary title", "content": "random", "expiration_time": 1})
 
     created_post = schemas.Post(**res.json())
     assert res.status_code == 201
@@ -102,6 +102,7 @@ def test_update_post(authorized_client, test_user, test_posts):
     data = {
         "title": "updated title",
         "content": "updated content",
+        "expiration_time": "1",
         "id": test_posts[0].id
 
     }
@@ -116,6 +117,7 @@ def test_update_other_user_post(authorized_client, test_user, test_user2, test_p
     data = {
         "title": "updated title",
         "content": "updated content",
+        "expiration_time": "1",
         "id": test_posts[3].id
 
     }
@@ -133,6 +135,7 @@ def test_update_post_non_exist(authorized_client, test_user, test_posts):
     data = {
         "title": "updated title",
         "content": "updated content",
+        "expiration_time": "1",
         "id": test_posts[3].id
 
     }

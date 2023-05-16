@@ -126,7 +126,7 @@ def test_posts_for_notification(authorized_client):
 @pytest.fixture
 def test_create_notification(authorized_client, session, test_user2):
     res = authorized_client.post(
-        "/posts/", json={"title": "test title", "content": "test content", "published": True})
+        "/posts/", json={"title": "test title", "content": "test content", "published": True, "expiration_time": 1})
     created_post = schemas.Post(**res.json())
     notifications = session.query(models.Notification).filter_by(
         recipient_id=test_user2['id']).all()
