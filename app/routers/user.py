@@ -7,6 +7,7 @@ from typing import List
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 from pytz import utc
+import smtplib
 
 scheduler = BackgroundScheduler()
 scheduler.configure(timezone=utc)
@@ -16,6 +17,14 @@ router = APIRouter(
     prefix="/users",
     tags=['Users']
 )
+
+
+# def sendMail():
+#     server = smtplib.SMTP('smtp.gmail.com', 587)
+#     server.starttls()
+#     server.login('divinityworld04@gmail.com', 'world04divinity')
+#     server.sendmail('divinityworld04@gmail.com',
+#                     'amanmittal0210@gmail.com', 'Mail Sent From FastApi')
 
 
 def create_notification(db: Session, sender_id: int, recipient_id: int, message: str):
@@ -69,6 +78,12 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/userProfile", response_model=schemas.UserProfile)
 def get_user(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    # sendMail()
+    # server = smtplib.SMTP('smtp.gmail.com', 465)
+    # server.starttls()
+    # server.login('amanmittal0210@gmail.com', 'pedqtuwfrandneko')
+    # server.sendmail('amanmittal0210@gmail.com',
+    #                 'divinityworld04@gmail.com', 'Mail Sent From FastApi')
     scheduler.add_job(scan_user_posts, 'interval',
                       minutes=1, args=[current_user.id, db])
     user = db.query(models.User).filter(
