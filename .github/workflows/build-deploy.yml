@@ -96,6 +96,16 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOSTNAME  }}
+          port: 22
+          sync: false
+          use_insecure_cipher: false
+          timeout: 30s
+          command_timeout: 10m
+          proxy_port: 22
+          proxy_timeout: 30s
+          proxy_use_insecure_cipher: false
+          script_stop: false
+          debug: false
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
           HOSTNAME: ${{ secrets.HOSTNAME  }}
