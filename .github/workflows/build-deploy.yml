@@ -99,7 +99,7 @@ jobs:
         run: |
           echo "Deploying to EC2"
           echo "${{ secrets.AWS_PRIVATE_KEY }}"
-          echo -n `${{ secrets.AWS_PRIVATE_KEY }}` > private_key
+          echo -n "${{ secrets.AWS_PRIVATE_KEY }}" | tr -d '\r' > private_key
           echo "Doing Chmod on private key"
           chmod 600 private_key
           mkdir -p $HOME/.ssh
