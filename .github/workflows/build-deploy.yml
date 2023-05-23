@@ -98,8 +98,8 @@ jobs:
         shell: /usr/bin/bash -e {0}
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
-          HOSTNAME: ${{ secrets.HOSTNAME  }}
-          USER_NAME: ${{ secrets.USER_NAME  }}
+          HOSTNAME: 43.204.97.97
+          USER_NAME: ubuntu
       # echo "Deploying on EC2"
       # ssh -i fastapi_nginxx.pem ubuntu@13.126.145.99
       # sudo su -
