@@ -75,9 +75,12 @@ jobs:
   #   run: echo ${{ steps.docker_build.outputs.digest }}
 
   deploy:
-    runs-on: ubuntu-latest
     environment:
       name: testing
+    env:
+      PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
+      HOSTNAME: 43.204.97.97
+      USER_NAME: ubuntu
     # needs: [build]
     # env:
     #   PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
@@ -88,7 +91,7 @@ jobs:
     #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     #   EC2_HOST: <your-ec2-instance-hostname>
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -96,7 +99,7 @@ jobs:
         run: |
           echo "Deploying to EC2"
           echo "${{ secrets.AWS_PRIVATE_KEY }}"
-          echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key
+          echo -n "${{ secrets.AWS_PRIVATE_KEY }}" > private_key
           echo "Doing Chmod on private key"
           chmod 600 private_key
           mkdir -p $HOME/.ssh
@@ -106,10 +109,6 @@ jobs:
           ssh-add private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
         shell: /usr/bin/bash -e {0}
-        env:
-          PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
-          HOSTNAME: 43.204.97.97
-          USER_NAME: ubuntu
 
       # echo "Deploying on EC2"
       # ssh -i fastapi_nginxx.pem ubuntu@13.126.145.99
