@@ -96,9 +96,9 @@ jobs:
           chmod 600 private_key
           mkdir -p $HOME/.ssh
           touch $HOME/.ssh/known_hosts
-          ssh-keyscan 43.204.97.97 >> $HOME/.ssh/known_hosts
+          ssh-keyscan ${HOSTNAME} >> $HOME/.ssh/known_hosts
           ssh -i private_key -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} 'command-to-be-executed'
-        shell: /usr/bin/bash -e {0}
+        shell: bash
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
           HOSTNAME: 43.204.97.97
