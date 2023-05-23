@@ -45,7 +45,8 @@ jobs:
         run: pip install apscheduler
       - name: test with pytest
         run: |
-          echo ${DATABASE_HOSTNAME}
+          echo "checking database hostname"
+          echo ${{secrets.DATABASE_HOSTNAME}}
           pip install pytest
           pytest
 
