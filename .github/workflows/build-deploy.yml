@@ -76,6 +76,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: testing
     # needs: [build]
     # env:
     #   PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
