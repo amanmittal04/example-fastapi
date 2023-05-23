@@ -105,6 +105,8 @@ jobs:
           echo "Entered to AWS EC2"
           sudo su -
           echo "Entered to root"
+          cd app/src
+          git pull origin main
         shell: /usr/bin/bash -e {0}
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
         # echo "Doing Chmod on private key"
