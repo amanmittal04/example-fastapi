@@ -96,7 +96,6 @@ jobs:
           chmod 600 private_key
           mkdir -p $HOME/.ssh
           touch $HOME/.ssh/known_hosts
-        # ssh-keygen -R 43.204.97.97
           ssh-keyscan 43.204.97.97 >> $HOME/.ssh/known_hosts
           ssh -i private_key -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} 'command-to-be-executed'
         shell: /usr/bin/bash -e {0}
