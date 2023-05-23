@@ -93,7 +93,6 @@ jobs:
       - name: Deploy in EC2
         run: |
           echo "Deploying to EC2"
-          echo "$PRIVATE_KEY"
           echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key
           echo "Doing Chmod on private key"
           chmod 600 private_key
@@ -108,7 +107,7 @@ jobs:
           PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
           HOSTNAME: 43.204.97.97
           USER_NAME: ubuntu
-
+      # echo "$PRIVATE_KEY"
       # echo "Deploying on EC2"
       # ssh -i fastapi_nginxx.pem ubuntu@13.126.145.99
       # sudo su -
