@@ -106,7 +106,9 @@ jobs:
           sudo su -
           echo "Entered to root"
           cd app
+          python3 -m venv venv
           source venv/bin/activate
+          echo "Virtual environment created and activated"
         shell: /usr/bin/bash -e {0}
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
         # echo "Doing Chmod on private key"
