@@ -113,8 +113,11 @@ jobs:
           cd src
           git pull origin main
           pip install alembic
-          alembic upgrade head
+          echo "Alembic Installed"
+          current_directory=$(pwd)
+          echo $current_directory
         shell: /usr/bin/bash -e {0}
+        # alembic upgrade head
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
         # echo "Doing Chmod on private key"
         # chmod 600 studio.pem
