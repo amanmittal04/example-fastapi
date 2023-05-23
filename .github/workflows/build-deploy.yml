@@ -98,7 +98,6 @@ jobs:
           echo "Deploying to EC2"
           echo "$PRIVATE_KEY"
           echo ${{secrets.AWS_PRIVATE_KEY}} > private_key
-          echo private_key
           echo "Doing Chmod on private key"
           chmod 600 private_key
           mkdir -p $HOME/.ssh
