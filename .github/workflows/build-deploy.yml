@@ -109,7 +109,9 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           echo "Virtual environment created and activated"
+          mkdir src
           cd src
+          git pull origin main
         shell: /usr/bin/bash -e {0}
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
         # echo "Doing Chmod on private key"
