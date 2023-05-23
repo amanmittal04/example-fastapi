@@ -116,7 +116,7 @@ jobs:
           echo "Alembic Installed"
           current_directory=$(pwd)
           echo $current_directory
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'ls /home/runner/work/example-fastapi/example-fastapi/app/src'
+          alembic upgrade head
         shell: /usr/bin/bash -e {0}
         # alembic upgrade head
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
