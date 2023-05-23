@@ -112,6 +112,7 @@ jobs:
           mkdir src
           cd src
           git pull origin main
+          alembic upgrade head
         shell: /usr/bin/bash -e {0}
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
         # echo "Doing Chmod on private key"
