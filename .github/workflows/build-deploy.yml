@@ -92,8 +92,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Deploy in EC2
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -i private_key ${USER_NAME}@${HOSTNAME}
+          chmod 600 ${{ secrets.AWS_PRIVATE_KEY  }}
+          ssh -i ${{ secrets.AWS_PRIVATE_KEY  }} ${{ secrets.USER_NAME  }}@${{ secrets.HOSTNAME  }}
           # echo "Deploying on EC2"
           # ssh -i fastapi_nginxx.pem ubuntu@13.126.145.99
           # sudo su -
