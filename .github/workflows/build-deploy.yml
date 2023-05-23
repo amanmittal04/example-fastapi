@@ -99,7 +99,7 @@ jobs:
           ssh-keyscan ${HOSTNAME} >> $HOME/.ssh/known_hosts
           eval $(ssh-agent)
           ssh-add private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'command-to-be-executed'
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
         shell: /usr/bin/bash -e {0}
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
