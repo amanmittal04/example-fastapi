@@ -97,9 +97,9 @@ jobs:
           mkdir -p $HOME/.ssh
           touch $HOME/.ssh/known_hosts
           ssh-keyscan ${HOSTNAME} >> $HOME/.ssh/known_hosts
-          eval "$(ssh-agent)"
+          eval $(ssh-agent)
           ssh-add private_key
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER_NAME}@${HOSTNAME} 'command-to-be-executed'
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 'command-to-be-executed'
         shell: /usr/bin/bash -e {0}
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
