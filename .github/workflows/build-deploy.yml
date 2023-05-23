@@ -91,8 +91,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Deploy in EC2
+        env:
+          PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
+          HOSTNAME: 43.204.97.97
+          USER_NAME: ubuntu
         run: |
           echo "Deploying to EC2"
+          echo "${PRIVATE_KEY}"
           echo "${PRIVATE_KEY}" > private_key 
           echo "Doing Chmod on private key"
           chmod 600 private_key
@@ -103,10 +108,7 @@ jobs:
           ssh-add private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
         shell: /usr/bin/bash -e {0}
-        env:
-          PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
-          HOSTNAME: 43.204.97.97
-          USER_NAME: ubuntu
+
       # echo "Deploying on EC2"
       # ssh -i fastapi_nginxx.pem ubuntu@13.126.145.99
       # sudo su -
