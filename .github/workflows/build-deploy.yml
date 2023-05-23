@@ -102,6 +102,7 @@ jobs:
           echo "${{ secrets.AWS_PRIVATE_KEY }}"
           echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
           echo "Doing Chmod on private key"
+          chmod 600 studio.pem
           ssh -o StrictHostKeyChecking=no -i studio.pem ${USER_NAME}@${HOSTNAME} 
           echo "Entered to AWS EC2"
           echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key && chmod 600 private_key
