@@ -94,7 +94,7 @@ jobs:
         run: |
           echo "${PRIVATE_KEY}" > private_key 
           chmod 600 private_key
-          ssh -i private_key ${USER_NAME}@${HOSTNAME}
+          ssh -i private_key ${USER_NAME}@${HOSTNAME} 'command-to-be-executed'
         shell: /usr/bin/bash -e {0}
         env:
           PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
