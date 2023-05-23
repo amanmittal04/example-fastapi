@@ -100,14 +100,14 @@ jobs:
         run: |
           echo "Deploying to EC2"
           echo "${{ secrets.AWS_PRIVATE_KEY }}"
-          echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
-          echo "Doing Chmod on private key"
-          chmod 600 studio.pem
-          ssh -o StrictHostKeyChecking=no -i studio.pem ${USER_NAME}@${HOSTNAME} 
-          echo "Entered to AWS EC2"
           echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key && chmod 600 private_key
-          echo "Applied chmod on private key"
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
+          echo "Entered to AWS EC2"
         shell: /usr/bin/bash -e {0}
+        # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
+        # echo "Doing Chmod on private key"
+        # chmod 600 studio.pem
+        # ssh -o StrictHostKeyChecking=no -i studio.pem ${USER_NAME}@${HOSTNAME}
         # chmod 600 private_key
         # mkdir -p $HOME/.ssh
         # touch $HOME/.ssh/known_hosts
