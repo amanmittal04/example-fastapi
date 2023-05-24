@@ -100,8 +100,7 @@ jobs:
         run: |
           echo "Deploying to EC2"
           echo aman | sudo -E -S su - aman
-          cd app
-          source venv/bin/activate
+          cd app/src
 
       # - name: Deploy in EC2
       #   run: |
