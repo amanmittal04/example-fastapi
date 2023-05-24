@@ -92,65 +92,70 @@ jobs:
     #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     #   EC2_HOST: <your-ec2-instance-hostname>
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Deploy in EC2
         run: |
           echo "Deploying to EC2"
-          echo "${{ secrets.AWS_PRIVATE_KEY }}"
-          echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
-          echo "Entered to AWS EC2"
-          sudo su -
-          echo "Entered to root"
-          cd app
-          python3 -m venv venv
-          source venv/bin/activate
-          echo "Virtual environment created and activated"
-          mkdir src
-          cd src
-          git clone https://github.com/amanmittal04/example-fastapi.git .
-          pip install alembic
-          echo "Alembic Installed"
-          current_directory=$(pwd)
-          echo $current_directory
-          pip install -r requirements.txt
-          echo "Requirements Installed"
-          export database_hostname=localhost
-          export database_port=5432
-          export database_password=postgres
-          export database_name=fastapi
-          export database_username=postgres
-          export secret_key=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-          export algorithm=HS256
-          export access_token_expire_minutes=30
-          echo "setup env var"
-          echo postgres | sudo -E -S su - postgres
-          sudo service postgresql start
-          sleep 5
-          echo postgres | sudo -E -S su -
-          echo "exited from postgres"
-          cd app
-          source venv/bin/activate
-          cd src
-          echo "in root src"
-          alembic upgrade head
-          echo "alembic upgrade done"
-        shell: /usr/bin/bash -e {0}
-        # alembic upgrade head
-        # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
-        # echo "Doing Chmod on private key"
-        # chmod 600 studio.pem
-        # ssh -o StrictHostKeyChecking=no -i studio.pem ${USER_NAME}@${HOSTNAME}
-        # chmod 600 private_key
-        # mkdir -p $HOME/.ssh
-        # touch $HOME/.ssh/known_hosts
-        # ssh-keyscan ${HOSTNAME} >> $HOME/.ssh/known_hosts
-        # eval $(ssh-agent -s)
-        # ssh-add private_key
-        # ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
+          echo aman | sudo -E -S su - aman
+
+      # - name: Deploy in EC2
+      #   run: |
+      #     echo "Deploying to EC2"
+      #     echo "${{ secrets.AWS_PRIVATE_KEY }}"
+      #     echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key && chmod 600 private_key
+      #     ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
+      #     echo "Entered to AWS EC2"
+      #     sudo su -
+      #     echo "Entered to root"
+      #     cd app
+      #     python3 -m venv venv
+      #     source venv/bin/activate
+      #     echo "Virtual environment created and activated"
+      #     mkdir src
+      #     cd src
+      #     git clone https://github.com/amanmittal04/example-fastapi.git .
+      #     pip install alembic
+      #     echo "Alembic Installed"
+      #     current_directory=$(pwd)
+      #     echo $current_directory
+      #     pip install -r requirements.txt
+      #     echo "Requirements Installed"
+      #     export database_hostname=localhost
+      #     export database_port=5432
+      #     export database_password=postgres
+      #     export database_name=fastapi
+      #     export database_username=postgres
+      #     export secret_key=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+      #     export algorithm=HS256
+      #     export access_token_expire_minutes=30
+      #     echo "setup env var"
+      #     echo postgres | sudo -E -S su - postgres
+      #     sudo service postgresql start
+      #     sleep 5
+      #     echo postgres | sudo -E -S su -
+      #     echo "exited from postgres"
+      #     cd app
+      #     source venv/bin/activate
+      #     cd src
+      #     echo "in root src"
+      #     alembic upgrade head
+      #     echo "alembic upgrade done"
+      #   shell: /usr/bin/bash -e {0}
+      # alembic upgrade head
+      # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
+      # echo "Doing Chmod on private key"
+      # chmod 600 studio.pem
+      # ssh -o StrictHostKeyChecking=no -i studio.pem ${USER_NAME}@${HOSTNAME}
+      # chmod 600 private_key
+      # mkdir -p $HOME/.ssh
+      # touch $HOME/.ssh/known_hosts
+      # ssh-keyscan ${HOSTNAME} >> $HOME/.ssh/known_hosts
+      # eval $(ssh-agent -s)
+      # ssh-add private_key
+      # ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
 
       # echo "Deploying on EC2"
       # ssh -i fastapi_nginxx.pem ubuntu@13.126.145.99
