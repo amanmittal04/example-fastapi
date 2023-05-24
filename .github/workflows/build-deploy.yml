@@ -111,12 +111,11 @@ jobs:
           echo "Virtual environment created and activated"
           mkdir src
           cd src
-          git pull origin main
+          git clone https://github.com/amanmittal04/example-fastapi.git .
           pip install alembic
           echo "Alembic Installed"
           current_directory=$(pwd)
           echo $current_directory
-          ls | xargs echo
         shell: /usr/bin/bash -e {0}
         # alembic upgrade head
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
