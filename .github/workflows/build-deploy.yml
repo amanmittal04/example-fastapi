@@ -127,12 +127,10 @@ jobs:
           export algorithm=HS256
           export access_token_expire_minutes=30
           echo "setup env var"
-          exit
-          sudo su -
           su - postgres
           sudo service postgresql start
           sleep 5
-          exit
+          echo postgres | sudo -E -S su -
           echo "exited from postgres"
           cd app
           source venv/bin/activate
