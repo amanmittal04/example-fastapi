@@ -101,6 +101,7 @@ jobs:
           echo "Deploying to EC2"
           echo aman | sudo -E -S su - aman
           cd ~/app/src
+          git pull origin main
 
       # - name: Deploy in EC2
       #   run: |
