@@ -116,6 +116,8 @@ jobs:
           echo "Alembic Installed"
           current_directory=$(pwd)
           echo $current_directory
+          pip install psycopg2
+          echo "psycopg2 Installed"
           alembic upgrade head
         shell: /usr/bin/bash -e {0}
         # alembic upgrade head
