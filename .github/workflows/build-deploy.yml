@@ -127,7 +127,7 @@ jobs:
           export algorithm=HS256
           export access_token_expire_minutes=30
           echo "setup env var"
-          su - postgres
+          echo postgres | sudo -E -S su - postgres
           sudo service postgresql start
           sleep 5
           echo postgres | sudo -E -S su -
