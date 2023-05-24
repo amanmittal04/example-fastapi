@@ -31,11 +31,10 @@ def create_notification(db: Session, sender_id: int, recipient_id: int, message:
     db.commit()
 
 
-def scan_user_posts(user_id, db: Session = Depends(get_db)):
+async def scan_user_posts(user_id, db: Session = Depends(get_db)):
     posts = db.query(models.Post).filter(
         models.Post.owner_id == user_id).all()
-    # user = db.query(models.User).filter(models.User.id == user_id).first()
-    # print(user['email'])
+    user = db.query(models.User).filter(models.User.id == user_id).first()
     current_time = datetime.now().date()
 
     for post in posts:
@@ -43,6 +42,7 @@ def scan_user_posts(user_id, db: Session = Depends(get_db)):
         expiration_time = post.expiration_time
         if current_time == (created_time + timedelta(days=expiration_time)).date():
             message = f"Your Post with title : {post.title} has expired"
+            await send_email(user.email, message, "Post Expired")
             create_notification(db, user_id, user_id, message)
             post_query = db.query(models.Post).filter(
                 models.Post.id == post.id)
@@ -92,8 +92,7 @@ def get_user(db: Session = Depends(get_db), current_user: int = Depends(oauth2.g
 
 
 @router.get("/notifications", response_model=List[schemas.Notification])
-async def get_notifications(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    await send_email("divinityworld04@gmail.com", "post expired", "Post Expired")
+def get_notifications(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     notifications = db.query(models.Notification).filter(
         models.Notification.recipient_id == current_user.id).all()
     notifications_list = []

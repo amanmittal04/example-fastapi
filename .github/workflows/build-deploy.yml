@@ -100,15 +100,15 @@ jobs:
           echo "Uvicorn Installed"
           pip3 install fastapi-mail
           echo "fastapi-mail Installed"
-          export database_hostname=localhost
-          export database_port=5432
-          export database_password=postgres
-          export database_name=fastapi
-          export database_username=postgres
-          export secret_key=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-          export algorithm=HS256
-          export access_token_expire_minutes=30
-          export email=amanmittal0210@gmail.com
-          export password=pedqtuwfrandneko
+          export database_hostname=${{ secrets.DATABASE_HOSTNAME }}
+          export database_port=${{ secrets.DATABASE_PORT }}
+          export database_password=${{ secrets.DATABASE_PASSWORD }}
+          export database_name=${{ secrets.DATABASE_NAME }}
+          export database_username=${{ secrets.DATABASE_USERNAME }}
+          export secret_key=${{ secrets.SECRET_KEY }}
+          export algorithm=${{ secrets.ALGORITHM }}
+          export access_token_expire_minutes=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
+          export email=${{ secrets.EMAIL }}
+          export password=${{ secrets.PASSWORD }}
           pip3 install APScheduler
           ~/.local/bin/uvicorn app.main:app
