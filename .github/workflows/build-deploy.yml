@@ -43,6 +43,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: install aps scheduler
         run: pip install apscheduler
+      - name: install fastapi mail
+        run: pip install fastapi-mail
       - name: test with pytest
         run: |
           echo "checking database hostname"
