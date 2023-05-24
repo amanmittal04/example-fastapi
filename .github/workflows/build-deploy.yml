@@ -117,7 +117,6 @@ jobs:
           current_directory=$(pwd)
           echo $current_directory
           ls | xargs echo
-          alembic upgrade head
         shell: /usr/bin/bash -e {0}
         # alembic upgrade head
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
