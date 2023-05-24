@@ -119,6 +119,7 @@ jobs:
           pip install -r requirements.txt
           echo "Requirements Installed"
           alembic upgrade head
+          echo "alembic upgrade done"
         shell: /usr/bin/bash -e {0}
         # alembic upgrade head
         # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
