@@ -98,6 +98,8 @@ jobs:
           echo "Requirements Installed"
           pip3 install uvicorn
           echo "Uvicorn Installed"
+          pip3 install fastapi-mail
+          echo "fastapi-mail Installed"
           export database_hostname=localhost
           export database_port=5432
           export database_password=postgres
