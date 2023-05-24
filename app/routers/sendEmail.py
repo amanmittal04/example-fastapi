@@ -2,14 +2,15 @@ from typing import List
 from fastapi import APIRouter, Response
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel
+from app.config import settings
 from dotenv import dotenv_values
 
 credentials = dotenv_values(".env")
 
 conf = ConnectionConfig(
-    MAIL_USERNAME=credentials['EMAIL'],
-    MAIL_PASSWORD=credentials['PASS'],
-    MAIL_FROM=credentials['EMAIL'],
+    MAIL_USERNAME=settings.email,
+    MAIL_PASSWORD=settings.password,
+    MAIL_FROM=settings.email,
     MAIL_PORT=465,
     MAIL_SERVER="smtp.gmail.com",
     MAIL_STARTTLS=False,
