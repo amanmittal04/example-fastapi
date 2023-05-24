@@ -133,9 +133,11 @@ jobs:
           sudo service postgresql start
           sleep 5
           exit
+          echo "exited from postgres"
           cd app
           source venv/bin/activate
           cd src
+          echo "in root src"
           alembic upgrade head
           echo "alembic upgrade done"
         shell: /usr/bin/bash -e {0}
