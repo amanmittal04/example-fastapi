@@ -3,95 +3,85 @@ name: Build and Deploy Code
 on: [push, pull_request]
 
 jobs:
-  # build:
-  #   environment:
-  #     name: testing
-  #   env:
-  #     DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
-  #     DATABASE_PORT: ${{secrets.DATABASE_PORT}}
-  #     DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-  #     DATABASE_NAME: ${{secrets.DATABASE_NAME}}
-  #     DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
-  #     SECRET_KEY: ${{secrets.SECRET_KEY}}
-  #     ALGORITHM: ${{secrets.ALGORITHM}}
-  #     ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
-  #   services:
-  #     postgres:
-  #       image: postgres
-  #       env:
-  #         POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-  #         POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
-  #       ports:
-  #         - 5432:5432
-  #       options: >-
-  #         --health-cmd pg_isready
-  #         --health-interval 10s
-  #         --health-timeout 5s
-  #         --health-retries 5
+  build:
+    environment:
+      name: testing
+    env:
+      DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+      SECRET_KEY: ${{secrets.SECRET_KEY}}
+      ALGORITHM: ${{secrets.ALGORITHM}}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+          POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: pulling git repo
-  #       uses: actions/checkout@v3
-  #     - name: Install python version 3.9
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: "3.9"
-  #     - name: update pip
-  #       run: python -m pip install --upgrade pip
-  #     - name: install all dependencies
-  #       run: pip install -r requirements.txt
-  #     - name: install aps scheduler
-  #       run: pip install apscheduler
-  #     - name: test with pytest
-  #       run: |
-  #         echo "checking database hostname"
-  #         echo ${{secrets.DATABASE_HOSTNAME}}
-  #         pip install pytest
-  #         pytest
+    runs-on: ubuntu-latest
+    steps:
+      - name: pulling git repo
+        uses: actions/checkout@v3
+      - name: Install python version 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: update pip
+        run: python -m pip install --upgrade pip
+      - name: install all dependencies
+        run: pip install -r requirements.txt
+      - name: install aps scheduler
+        run: pip install apscheduler
+      - name: test with pytest
+        run: |
+          echo "checking database hostname"
+          echo ${{secrets.DATABASE_HOSTNAME}}
+          pip install pytest
+          pytest
 
-  #     - name: Login to Docker Hub
-  #       uses: docker/login-action@v2
-  #       with:
-  #         username: ${{ secrets.DOCKER_HUB_USERNAME }}
-  #         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-  #     - name: Set up Docker Buildx
-  #       id: buildx
-  #       uses: docker/setup-buildx-action@v2
-  #     - name: Build and push
-  #       id: docker_build
-  #       uses: docker/build-push-action@v4
-  #       with:
-  #         context: ./
-  #         file: ./Dockerfile
-  #         builder: ${{ steps.buildx.outputs.name }}
-  #         push: true
-  #         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:0.1
-  #         cache-from: type=local,src=/tmp/.buildx-cache
-  #         cache-to: type=local,dest=/tmp/.buildx-cache
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v4
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:0.1
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
 
-  #     - name: Image digest
-  #       run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
 
   deploy:
-    # needs: [build]
+    needs: [build]
     environment:
       name: testing
     env:
       PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
       HOSTNAME: 43.204.97.97
       USER_NAME: ubuntu
-
-    # env:
-    #   PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
-    #   HOSTNAME: ${{ secrets.HOSTNAME  }}
-    #   USER_NAME: ${{ secrets.USER_NAME  }}
-    # env:
-    #   AWS_REGION: <your-aws-region>
-    #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #   EC2_HOST: <your-ec2-instance-hostname>
     runs-on: self-hosted
     steps:
       - name: Checkout repository
@@ -116,97 +106,3 @@ jobs:
           export access_token_expire_minutes=30
           pip3 install APScheduler
           ~/.local/bin/uvicorn app.main:app
-
-      # - name: Deploy in EC2
-      #   run: |
-      #     echo "Deploying to EC2"
-      #     echo "${{ secrets.AWS_PRIVATE_KEY }}"
-      #     echo "${{ secrets.AWS_PRIVATE_KEY }}" > private_key && chmod 600 private_key
-      #     ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
-      #     echo "Entered to AWS EC2"
-      #     sudo su -
-      #     echo "Entered to root"
-      #     cd app
-      #     python3 -m venv venv
-      #     source venv/bin/activate
-      #     echo "Virtual environment created and activated"
-      #     mkdir src
-      #     cd src
-      #     git clone https://github.com/amanmittal04/example-fastapi.git .
-      #     pip install alembic
-      #     echo "Alembic Installed"
-      #     current_directory=$(pwd)
-      #     echo $current_directory
-      #     pip install -r requirements.txt
-      #     echo "Requirements Installed"
-      #     export database_hostname=localhost
-      #     export database_port=5432
-      #     export database_password=postgres
-      #     export database_name=fastapi
-      #     export database_username=postgres
-      #     export secret_key=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-      #     export algorithm=HS256
-      #     export access_token_expire_minutes=30
-      #     echo "setup env var"
-      #     echo postgres | sudo -E -S su - postgres
-      #     sudo service postgresql start
-      #     sleep 5
-      #     echo postgres | sudo -E -S su -
-      #     echo "exited from postgres"
-      #     cd app
-      #     source venv/bin/activate
-      #     cd src
-      #     echo "in root src"
-      #     alembic upgrade head
-      #     echo "alembic upgrade done"
-      #   shell: /usr/bin/bash -e {0}
-      # alembic upgrade head
-      # echo "${{ secrets.AWS_PRIVATE_KEY }}" > studio.pem
-      # echo "Doing Chmod on private key"
-      # chmod 600 studio.pem
-      # ssh -o StrictHostKeyChecking=no -i studio.pem ${USER_NAME}@${HOSTNAME}
-      # chmod 600 private_key
-      # mkdir -p $HOME/.ssh
-      # touch $HOME/.ssh/known_hosts
-      # ssh-keyscan ${HOSTNAME} >> $HOME/.ssh/known_hosts
-      # eval $(ssh-agent -s)
-      # ssh-add private_key
-      # ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME}
-
-      # echo "Deploying on EC2"
-      # ssh -i fastapi_nginxx.pem ubuntu@13.126.145.99
-      # sudo su -
-      # cd app/src
-      # - name: Checkout repository
-      #   uses: actions/checkout@v3
-
-      # - name: Deploy to EC2
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.HOSTNAME  }}
-      #     port: 22
-      #     sync: false
-      #     use_insecure_cipher: false
-      #     timeout: 30s
-      #     command_timeout: 10m
-      #     proxy_port: 22
-      #     proxy_timeout: 30s
-      #     proxy_use_insecure_cipher: false
-      #     script_stop: false
-      #     debug: false
-      #   env:
-      #     PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
-      #     HOSTNAME: ${{ secrets.HOSTNAME  }}
-      #     USER_NAME: ${{ secrets.USER_NAME  }}
-
-      # run: |
-      #   echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-      #   ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-
-      #     #Now we have got the access of EC2 and we will start the deploy .
-      #     cd /home/ubuntu/CounterApp &&
-      #     git checkout master &&
-      #     git fetch --all &&
-      #     git reset --hard origin/master &&
-      #     git pull origin master &&
-      #     docker-compose -f docker-compose.prod.yml up -d --build

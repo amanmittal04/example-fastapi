@@ -8,6 +8,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 from pytz import utc
 import smtplib
+from .sendEmail import send_email
+
 
 scheduler = BackgroundScheduler()
 scheduler.configure(timezone=utc)
@@ -17,14 +19,6 @@ router = APIRouter(
     prefix="/users",
     tags=['Users']
 )
-
-
-# def sendMail():
-#     server = smtplib.SMTP('smtp.gmail.com', 587)
-#     server.starttls()
-#     server.login('divinityworld04@gmail.com', 'world04divinity')
-#     server.sendmail('divinityworld04@gmail.com',
-#                     'amanmittal0210@gmail.com', 'Mail Sent From FastApi')
 
 
 def create_notification(db: Session, sender_id: int, recipient_id: int, message: str):
@@ -40,7 +34,8 @@ def create_notification(db: Session, sender_id: int, recipient_id: int, message:
 def scan_user_posts(user_id, db: Session = Depends(get_db)):
     posts = db.query(models.Post).filter(
         models.Post.owner_id == user_id).all()
-
+    # user = db.query(models.User).filter(models.User.id == user_id).first()
+    # print(user['email'])
     current_time = datetime.now().date()
 
     for post in posts:
@@ -78,12 +73,6 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/userProfile", response_model=schemas.UserProfile)
 def get_user(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    # sendMail()
-    # server = smtplib.SMTP('smtp.gmail.com', 465)
-    # server.starttls()
-    # server.login('amanmittal0210@gmail.com', 'pedqtuwfrandneko')
-    # server.sendmail('amanmittal0210@gmail.com',
-    #                 'divinityworld04@gmail.com', 'Mail Sent From FastApi')
     scheduler.add_job(scan_user_posts, 'interval',
                       minutes=1, args=[current_user.id, db])
     user = db.query(models.User).filter(
@@ -103,7 +92,8 @@ def get_user(db: Session = Depends(get_db), current_user: int = Depends(oauth2.g
 
 
 @router.get("/notifications", response_model=List[schemas.Notification])
-def get_notifications(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+async def get_notifications(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    await send_email("divinityworld04@gmail.com", "post expired", "Post Expired")
     notifications = db.query(models.Notification).filter(
         models.Notification.recipient_id == current_user.id).all()
     notifications_list = []
