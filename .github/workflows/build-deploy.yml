@@ -106,6 +106,14 @@ jobs:
           echo "Requirements Installed"
           pip3 install uvicorn
           echo "Uvicorn Installed"
+          export database_hostname=localhost
+          export database_port=5432
+          export database_password=postgres
+          export database_name=fastapi
+          export database_username=postgres
+          export secret_key=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
+          export algorithm=HS256
+          export access_token_expire_minutes=30
           ~/.local/bin/uvicorn app.main:app
 
       # - name: Deploy in EC2
