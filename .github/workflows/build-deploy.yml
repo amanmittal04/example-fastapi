@@ -106,7 +106,7 @@ jobs:
           echo "Requirements Installed"
           pip3 install uvicorn
           echo "uvicorn Installed"
-          uvicorn app.main:app
+          ~/.local/bin/uvicorn app.main:app
 
       # - name: Deploy in EC2
       #   run: |
