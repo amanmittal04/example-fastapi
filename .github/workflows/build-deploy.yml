@@ -126,8 +126,15 @@ jobs:
           export secret_key=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
           export algorithm=HS256
           export access_token_expire_minutes=30
+          exit
+          sudo su -
+          su - postgres
           sudo service postgresql start
           sleep 5
+          exit
+          cd app
+          source venv/bin/activate
+          cd src
           alembic upgrade head
           echo "alembic upgrade done"
         shell: /usr/bin/bash -e {0}
