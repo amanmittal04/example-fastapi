@@ -102,8 +102,10 @@ jobs:
           echo aman | sudo -E -S su - aman
           cd ~/app/src
           git pull origin main
-          pip install -r requirements.txt
+          pip3 install -r requirements.txt
           echo "Requirements Installed"
+          pip3 install uvicorn
+          echo "uvicorn Installed"
           uvicorn app.main:app
 
       # - name: Deploy in EC2
