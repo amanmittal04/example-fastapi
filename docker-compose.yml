@@ -33,7 +33,7 @@ version: "3"
 services:
   api:
     image: amanmittal04/fastapi:0.1
-    container_name: fastapi
+    # container_name: fastapi
     ports:
       - 8000:8000
     
@@ -50,7 +50,7 @@ services:
       - PASSWORD=pedqtuwfrandneko
   postgres:
     image: postgres
-    container_name: fastapi_db
+    container_name: fastapi
     ports:
       - 5432:5432
     environment:
