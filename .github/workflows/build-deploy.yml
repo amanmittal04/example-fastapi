@@ -82,26 +82,30 @@ jobs:
     needs: [build]
     environment:
       name: testing
-    env:
-      PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
-      HOSTNAME: 43.204.97.97
-      USER_NAME: ubuntu
+    # env:
+    #   PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
+    #   HOSTNAME: 43.204.97.97
+    #   USER_NAME: ubuntu
     runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Deploy in EC2
+      - name: Deploying in EC2
         run: |
           echo "Deploying to EC2"
           echo aman | sudo -E -S su - aman
+      - name: Getting Pull from Main
+        run: |
           cd ~/app/src
           git pull origin main
+      - name: Installing Requirements
+        run: |
           pip3 install -r requirements.txt
-          echo "Requirements Installed"
           pip3 install uvicorn
-          echo "Uvicorn Installed"
           pip3 install fastapi-mail
-          echo "fastapi-mail Installed"
+          pip3 install APScheduler
+      - name: Exporting Environment Variables
+        run: |
           export database_hostname=${{ secrets.DATABASE_HOSTNAME }}
           export database_port=${{ secrets.DATABASE_PORT }}
           export database_password=${{ secrets.DATABASE_PASSWORD }}
@@ -112,5 +116,6 @@ jobs:
           export access_token_expire_minutes=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
           export email=${{ secrets.EMAIL }}
           export password=${{ secrets.PASSWORD }}
-          pip3 install APScheduler
+      - name: Starting Application
+        run: |
           ~/.local/bin/uvicorn app.main:app

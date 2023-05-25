@@ -3,9 +3,6 @@ from fastapi import APIRouter, Response
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel
 from app.config import settings
-# from dotenv import dotenv_values
-
-# credentials = dotenv_values(".env")
 
 conf = ConnectionConfig(
     MAIL_USERNAME=settings.email,
