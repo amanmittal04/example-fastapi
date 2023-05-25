@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                sh 'virtualenv venv && . venv/bin/activate && pip install -r requirements.txt'
+                sh 'pip install -r requirements.txt'
             }
         }
         // stage('Build') {
@@ -36,13 +36,10 @@ pipeline {
         // }
         stage('Testing') {
             steps {
-                sh 'pip3 install pytest'
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
-                sh 'sudo -E -S python3 -m pytest'
+                sh 'python3 -m pytest'
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose down' 
             }
         }
     }
 } 
-
-//hello
