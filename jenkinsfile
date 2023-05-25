@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_HUB_USERNAME=credentials('c0b104b8-dd2d-41d1-af4b-18aac98fcd63')
         DOCKER_HUB_ACCESS_TOKEN=credentials('d5ee82e6-c014-4565-ada1-8fb39249079e')
+        USER_CRED=credentials('a485edbb-cb73-4beb-b147-ca3722066bd0')
     }
 
     stages {
@@ -29,14 +30,16 @@ pipeline {
         // stage('Build') {
         //     steps {
         //         dir("."){
-        //             sh 'pip install virtualenv && virtualenv venv && venv/bin/activate && echo $USER_CRED_PSW && sudo -E -S apt install pip -y'
+        //             sh 'echo $USER_CRED_PSW && sudo -E -S apt install pip -y'
         //         }
         //     }
         // }
         stage('Testing') {
             steps {
                 sh 'pip3 install pytest'
+                sh 'echo $USER_CRED_PSW && sudo -E -S docker-compose up -d'
                 sh 'python3 -m pytest'
+                sh 'echo $USER_CRED_PSW && sudo -E -S docker-compose down' 
             }
         }
     }
