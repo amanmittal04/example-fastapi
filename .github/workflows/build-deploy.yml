@@ -3,83 +3,83 @@ name: Build and Deploy Code
 on: [push, pull_request]
 
 jobs:
-  build:
-    environment:
-      name: testing
-    env:
-      DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
-      DATABASE_PORT: ${{secrets.DATABASE_PORT}}
-      DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-      DATABASE_NAME: ${{secrets.DATABASE_NAME}}
-      DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
-      SECRET_KEY: ${{secrets.SECRET_KEY}}
-      ALGORITHM: ${{secrets.ALGORITHM}}
-      ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-          POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+  # build:
+  #   environment:
+  #     name: testing
+  #   env:
+  #     DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
+  #     DATABASE_PORT: ${{secrets.DATABASE_PORT}}
+  #     DATABASE_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+  #     DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+  #     DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
+  #     SECRET_KEY: ${{secrets.SECRET_KEY}}
+  #     ALGORITHM: ${{secrets.ALGORITHM}}
+  #     ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
+  #   services:
+  #     postgres:
+  #       image: postgres
+  #       env:
+  #         POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+  #         POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
+  #       ports:
+  #         - 5432:5432
+  #       options: >-
+  #         --health-cmd pg_isready
+  #         --health-interval 10s
+  #         --health-timeout 5s
+  #         --health-retries 5
 
-    runs-on: ubuntu-latest
-    steps:
-      - name: pulling git repo
-        uses: actions/checkout@v3
-      - name: Install python version 3.9
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-      - name: update pip
-        run: python -m pip install --upgrade pip
-      - name: install all dependencies
-        run: pip install -r requirements.txt
-      - name: install aps scheduler
-        run: pip install apscheduler
-      - name: install fastapi mail
-        run: pip install fastapi-mail
-      - name: test with pytest
-        run: |
-          echo "checking database hostname"
-          echo ${{secrets.DATABASE_HOSTNAME}}
-          export email=${{ secrets.EMAIL }}
-          export password=${{ secrets.PASSWORD }}
-          pip install pytest
-          pytest
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: pulling git repo
+  #       uses: actions/checkout@v3
+  #     - name: Install python version 3.9
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: "3.9"
+  #     - name: update pip
+  #       run: python -m pip install --upgrade pip
+  #     - name: install all dependencies
+  #       run: pip install -r requirements.txt
+  #     - name: install aps scheduler
+  #       run: pip install apscheduler
+  #     - name: install fastapi mail
+  #       run: pip install fastapi-mail
+  #     - name: test with pytest
+  #       run: |
+  #         echo "checking database hostname"
+  #         echo ${{secrets.DATABASE_HOSTNAME}}
+  #         export email=${{ secrets.EMAIL }}
+  #         export password=${{ secrets.PASSWORD }}
+  #         pip install pytest
+  #         pytest
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKER_HUB_USERNAME }}
+  #         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v4
-        with:
-          context: ./
-          file: ./Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:0.1
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+  #     - name: Set up Docker Buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v2
+  #     - name: Build and push
+  #       id: docker_build
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: ./
+  #         file: ./Dockerfile
+  #         builder: ${{ steps.buildx.outputs.name }}
+  #         push: true
+  #         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:0.1
+  #         cache-from: type=local,src=/tmp/.buildx-cache
+  #         cache-to: type=local,dest=/tmp/.buildx-cache
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+  #     - name: Image digest
+  #       run: echo ${{ steps.docker_build.outputs.digest }}
 
   deploy:
-    needs: [build]
+    # needs: [build]
     environment:
       name: testing
     # env:
@@ -104,7 +104,7 @@ jobs:
           pip3 install uvicorn
           pip3 install fastapi-mail
           pip3 install APScheduler
-      - name: Exporting Environment Variables
+      - name: Starting Application
         run: |
           export database_hostname=${{ secrets.DATABASE_HOSTNAME }}
           export database_port=${{ secrets.DATABASE_PORT }}
@@ -116,6 +116,4 @@ jobs:
           export access_token_expire_minutes=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
           export email=${{ secrets.EMAIL }}
           export password=${{ secrets.PASSWORD }}
-      - name: Starting Application
-        run: |
           ~/.local/bin/uvicorn app.main:app
