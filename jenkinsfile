@@ -37,9 +37,9 @@ pipeline {
         stage('Testing') {
             steps {
                 sh 'pip3 install pytest'
-                sh 'echo $USER_CRED_PSW && sudo -E -S docker-compose up -d'
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
                 sh 'python3 -m pytest'
-                sh 'echo $USER_CRED_PSW && sudo -E -S docker-compose down' 
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose down' 
             }
         }
     }
