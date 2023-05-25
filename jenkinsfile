@@ -14,16 +14,24 @@ pipeline {
                     echo 'My DOCKER_HUB_ACCESS_TOKEN is $DOCKER_HUB_ACCESS_TOKEN_PSW     
                 """
             }
-        }
-        stage('Install Python') {
+        } 
+        stage('Checkout') {
             steps {
-                sh 'curl -sSL https://github.com/actions/setup-python/releases/latest/download/setup-python.sh | bash -s -- -v 3.9'
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amanmittal04/example-fastapi.git']])
             }
         }
-        stage('Update pip') {
-            steps {
-                sh 'python -m pip install --upgrade pip'
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         dir("."){
+        //             sh 'pip install virtualenv && virtualenv venv && venv/bin/activate && echo $USER_CRED_PSW && sudo -E -S apt install pip -y'
+        //         }
+        //     }
+        // }
+        // stage('Testing') {
+        //     steps {
+        //         sh 'cd /var/lib/jenkins/workspace/build | pip install pytest | pytest -v -s'
+        //     }
+        // }
     }
 }
+
