@@ -45,7 +45,6 @@ def create_notification(db: Session, sender_id: int, recipient_id: int, message:
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     new_post = models.Post(
         owner_id=current_user.id, **post.dict())
-
     # Send notifications to other users
     users = db.query(models.User).filter(
         models.User.id != current_user.id).all()
