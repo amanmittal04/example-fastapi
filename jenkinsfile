@@ -2,13 +2,17 @@ pipeline {
     agent any
 
     environment {
-        DATABASE_HOSTNAME=credentials('20b76092-1966-4f90-96a2-e9b93e07e9ab')
+        DOCKER_HUB_USERNAME=credentials('c0b104b8-dd2d-41d1-af4b-18aac98fcd63')
+        DOCKER_HUB_ACCESS_TOKEN=credentials('d5ee82e6-c014-4565-ada1-8fb39249079e')
     }
 
     stages {
         stage('listing env var') {
             steps {
-                sh "echo 'My database hostname is $DATABASE_HOSTNAME_PSW    '"
+                sh """
+                    echo 'My DOCKER_HUB_USERNAME is $DOCKER_HUB_USERNAME_PSW   
+                    echo 'My DOCKER_HUB_ACCESS_TOKEN is $DOCKER_HUB_ACCESS_TOKEN_PSW     
+                """
             }
         }
     }
