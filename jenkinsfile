@@ -15,5 +15,15 @@ pipeline {
                 """
             }
         }
+        stage('Install Python') {
+            steps {
+                sh 'curl -sSL https://github.com/actions/setup-python/releases/latest/download/setup-python.sh | bash -s -- -v 3.9'
+            }
+        }
+        stage('Update pip') {
+            steps {
+                sh 'python -m pip install --upgrade pip'
+            }
+        }
     }
 }
