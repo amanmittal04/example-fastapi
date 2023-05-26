@@ -36,7 +36,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'docker build -t amanmittal04/fastapi:0.1 .'
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker build -t amanmittal04/fastapi:0.1 .'
             }
         }
         // stage('Login to Docker Hub') {
