@@ -27,13 +27,6 @@ pipeline {
                 sh 'pip install -r requirements.txt'
             }
         }
-        // stage('Build') {
-        //     steps {
-        //         dir("."){
-        //             sh 'echo $USER_CRED_PSW && sudo -E -S apt install pip -y'
-        //         }
-        //     }
-        // }
         stage('Testing') {
             steps {
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
@@ -41,5 +34,15 @@ pipeline {
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose down' 
             }
         }
+        stage('Build') {
+            steps {
+                sh 'docker build -t amanmittal04/fastapi:0.1 .'
+            }
+        }
+        // stage('Login to Docker Hub') {
+        //     steps {
+        //         sh 'docker login -u ${DOCKER_HUB_USERNAME_PSW} -p ${DOCKER_HUB_ACCESS_TOKEN_PSW}'
+        //     }
+        // }
     }
 } 
