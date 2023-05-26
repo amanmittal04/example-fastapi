@@ -1,4 +1,5 @@
 from pydantic import BaseSettings
+import os
 
 
 class Settings(BaseSettings):
@@ -10,8 +11,8 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
-    email: str
-    password: str
+    email: str = os.getenv("EMAIL")
+    password: str = os.getenv("PASSWORD")
 
     class Config:
         env_file = ".env"
