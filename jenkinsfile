@@ -47,7 +47,7 @@ pipeline {
         }
         stage('Push') {
             steps {
-                sh 'docker push amanmittal04/fastapi:0.1'
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker push amanmittal04/fastapi:0.1'
             }
         }
         // stage('Login to Docker Hub') {
