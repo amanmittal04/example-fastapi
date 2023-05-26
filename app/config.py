@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
-    email: str = os.getenv("EMAIL")
-    password: str = os.getenv("PASSWORD")
+    email: str
+    password: str
 
     class Config:
         env_file = ".env"
