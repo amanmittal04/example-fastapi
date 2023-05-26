@@ -45,6 +45,11 @@ pipeline {
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW'
             }
         }
+        stage('Push') {
+            steps {
+                sh 'docker push amanmittal04/fastapi:0.1'
+            }
+        }
         // stage('Login to Docker Hub') {
         //     steps {
         //         sh 'docker login -u ${DOCKER_HUB_USERNAME_PSW} -p ${DOCKER_HUB_ACCESS_TOKEN_PSW}'
