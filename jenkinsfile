@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+
+    agent {
+        label 'default'
+    }
+
 
     environment {
         DOCKER_HUB_USERNAME=credentials('c0b104b8-dd2d-41d1-af4b-18aac98fcd63')
@@ -21,6 +25,11 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amanmittal04/example-fastapi.git']])
             }
         
+        }
+        stage('OWASP Scan') {
+            steps {
+                dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+            }
         }
         stage('Install Dependencies') {
             steps {
@@ -56,5 +65,15 @@ pipeline {
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker push amanmittal04/fastapi:0.1'
             }
         }
+
+        // stage('Deplot') {
+        //     agent {
+        //         label 'aws'
+        //     }
+        //     steps {
+        //         // pull docker hub
+        //         // compose-up
+        //     }
+        // }
     }
 } 
