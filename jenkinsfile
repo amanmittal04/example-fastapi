@@ -62,6 +62,7 @@ pipeline {
                 DOCKER_CLIENT_TIMEOUT = '600' 
             }
             steps {
+                sh 'echo $USER_CRED_PSW | sudo -E -S trivy image amanmittal04/fastapi:0.1 > trivyReport.txt'
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker push amanmittal04/fastapi:0.1'
             }
         }
