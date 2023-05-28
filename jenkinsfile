@@ -26,11 +26,11 @@ pipeline {
             }
         
         }
-        // stage('OWASP Scan') {
-        //     steps {
-        //         dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
-        //     }
-        // }
+        stage('OWASP Scan') {
+            steps {
+                dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 sh 'pip install --upgrade pip'
