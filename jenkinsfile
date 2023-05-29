@@ -87,7 +87,7 @@ pipeline {
                     // echo $USER_CRED_PSW | sudo -E -S docker pull amanmittal04/fastapi:0.1
                     // echo $USER_CRED_PSW | sudo -E -S docker-compose up -d
                 sh """
-                    echo $USER_CRED_PSW | sudo -E -S docker-compose down
+                    sudo docker-compose down
                 """
             }
         }
