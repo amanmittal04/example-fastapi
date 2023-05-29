@@ -25,61 +25,70 @@ pipeline {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amanmittal04/example-fastapi.git']])
             }
-        
         }
-        stage('OWASP Scan') {
+        stage('Sonarqube Analysis') {
             steps {
-                dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
-            }
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://127.0.0.1:9000/ -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social-app \
+                            -Dsonar.java.binaries=. \
+                            -Dsonar.projectKey=social-app '''
+                }
         }
-        stage('Install Dependencies') {
-            steps {
-                sh 'pip install --upgrade pip'
-                sh 'pip install -r requirements.txt'
-            }
-        }
-        stage('Testing') {
-            steps {
-                sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
-                sh 'python3 -m pytest'
-                sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose down' 
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'echo $USER_CRED_PSW | sudo -E -S docker build -t amanmittal04/fastapi:0.1 .'
-            }
-        }
-        stage('Login') {
-            environment {
-                DOCKER_CLIENT_TIMEOUT = '600' 
-            }
-            steps {
-                sh 'echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW'
-            }
-        }
-        stage('Trivy Scan and Push') {
-            environment {
-                DOCKER_CLIENT_TIMEOUT = '600' 
-            }
-            steps {
-                sh 'echo $USER_CRED_PSW | sudo -E -S trivy image amanmittal04/fastapi:0.1 > trivyReport.txt'
-                sh 'echo $USER_CRED_PSW | sudo -E -S docker push amanmittal04/fastapi:0.1'
-            }
-        }
+        // stage('OWASP Scan') {
+        //     steps {
+        //         dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+        //     }
+        // }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         sh 'pip install --upgrade pip'
+        //         sh 'pip install -r requirements.txt'
+        //     }
+        // }
+        // stage('Testing') {
+        //     steps {
+        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
+        //         sh 'python3 -m pytest'
+        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose down' 
+        //     }
+        // }
+        // stage('Build') {
+        //     steps {
+        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker build -t amanmittal04/fastapi:0.1 .'
+        //     }
+        // }
+        // stage('Login') {
+        //     environment {
+        //         DOCKER_CLIENT_TIMEOUT = '600' 
+        //     }
+        //     steps {
+        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW'
+        //     }
+        // }
+        // stage('Trivy Scan and Push') {
+        //     environment {
+        //         DOCKER_CLIENT_TIMEOUT = '600' 
+        //     }
+        //     steps {
+        //         sh 'echo $USER_CRED_PSW | sudo -E -S trivy image amanmittal04/fastapi:0.1 > trivyReport.txt'
+        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker push amanmittal04/fastapi:0.1'
+        //     }
+        // }
 
-        stage('Deploy') {
-            agent {
-                label 'aws'
-            }
-            steps {
-                sh """
-                    echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
-                    sudo docker pull amanmittal04/fastapi:0.1
-                    sudo docker-compose up -d
-                    pwd
-                """
-            }
-        }
+        // stage('Deploy') {
+        //     agent {
+        //         label 'aws'
+        //     }
+        //     steps {
+        //         sh """
+        //             echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
+        //             sudo docker pull amanmittal04/fastapi:0.1
+        //             sudo docker-compose up -d
+        //             pwd
+        //         """
+        //     }
+        // }
     }
 } 
+
+
+// squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406
