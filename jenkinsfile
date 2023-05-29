@@ -88,6 +88,7 @@ pipeline {
                     // echo $USER_CRED_PSW | sudo -E -S docker-compose up -d
                 sh """
                     sudo docker-compose down
+                    pwd
                 """
             }
         }
