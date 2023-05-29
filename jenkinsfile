@@ -13,6 +13,8 @@ pipeline {
         SSH_CREDENTIALS = credentials('docker-host-root-keys')
         SONARSCANNER = 'sonarscanner'
         SONARSERVER = 'sonarserver'
+        SONAR_LOGIN = credentials('abb52b28-0816-4a28-8683-a40b9d7a093d')
+        SONAR_PASSWORD = credentials('63c49ffe-0c9e-469d-b7e3-a81f0ce8ef45')
     }
 
     stages {
@@ -29,15 +31,6 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amanmittal04/example-fastapi.git']])
             }
         }
-        // stage('Sonar Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('sonarserver') {
-        //             sh '''
-        //                 $SCANNER_HOME/bin/sonar-scanner -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
-        //             '''
-        //         }  
-        //     }
-        // }
 
         stage('Sonar Analysis') {
             environment{
@@ -46,19 +39,11 @@ pipeline {
             steps {
                 withSonarQubeEnv("${SONARSERVER}") {
                     sh '''
-                        ${scannerHome}/bin/sonar-scanner -Dsonar.url=http://localhost:9000/ -Dsonar.login=admin -Dsonar.password=amanmittal -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
+                        ${scannerHome}/bin/sonar-scanner -Dsonar.url=http://localhost:9000/ -Dsonar.login=$SONAR_LOGIN_PSW -Dsonar.password=$SONAR_PASSWORD_PSW -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
                     '''
                 }  
             }
         }
-        
-        // stage('Sonarqube Analysis') {
-        //     steps {
-        //             sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://127.0.0.1:9000/ -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social-app \
-        //                     -Dsonar.java.binaries=. \
-        //                     -Dsonar.projectKey=social-app '''
-        //         }
-        // }
         // stage('OWASP Scan') {
         //     steps {
         //         dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
