@@ -94,11 +94,14 @@ pipeline {
         //     }
         // }
     }
-    post{
-        always{
-            mail to: "amanmittal0210@gmail.com",
-            subject: "Jenkins Report",
-            body: "Go through Scanning Reports"
+    post {
+        always {
+            emailext (
+                to: "amanmittal0210@gmail.com",
+                subject: "Jenkins Report",
+                body: "Go through Scanning Reports",
+                attachments: '*.html'
+            )
         }
     }
 } 
