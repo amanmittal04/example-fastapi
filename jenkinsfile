@@ -82,10 +82,6 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'docker-host-root-keys', keyFileVariable: 'SSH_CREDENTIALS')]) {
                 sh """
                     ssh -o StrictHostKeyChecking=no -i $SSH_CREDENTIALS ubuntu@43.204.103.88
-                    // echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
-                    // echo $USER_CRED_PSW | sudo -E -S docker pull amanmittal04/fastapi:0.1
-                    // echo $USER_CRED_PSW | sudo -E -S docker-compose up -d
-                    pwd
                 """
                 }
             }
@@ -95,5 +91,9 @@ pipeline {
         //         sh 'ssh -o StrictHostKeyChecking=no -i docker 43.204.103.88'
         //     }
         // }
+        // echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
+        // echo $USER_CRED_PSW | sudo -E -S docker pull amanmittal04/fastapi:0.1
+        // echo $USER_CRED_PSW | sudo -E -S docker-compose up -d
+        // pwd
     }
 } 
