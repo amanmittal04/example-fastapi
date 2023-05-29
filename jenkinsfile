@@ -11,6 +11,8 @@ pipeline {
         DOCKER_HUB_ACCESS_TOKEN=credentials('d5ee82e6-c014-4565-ada1-8fb39249079e')
         USER_CRED=credentials('a485edbb-cb73-4beb-b147-ca3722066bd0')
         SSH_CREDENTIALS = credentials('docker-host-root-keys')
+        SONARSCANNER = 'sonarscanner'
+        SONARSERVER = 'sonarserver'
     }
 
     stages {
@@ -27,15 +29,29 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amanmittal04/example-fastapi.git']])
             }
         }
+        // stage('Sonar Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('sonarserver') {
+        //             sh '''
+        //                 $SCANNER_HOME/bin/sonar-scanner -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
+        //             '''
+        //         }  
+        //     }
+        // }
+
         stage('Sonar Analysis') {
+            environment{
+                scannerHome = tool "${SONARSCANNER}"
+            }
             steps {
-                withSonarQubeEnv('sonarserver') {
+                withSonarQubeEnv("${SONARSERVER}") {
                     sh '''
-                        $SCANNER_HOME/bin/sonar-scanner -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
+                        ${scannerHome}/bin/sonar-scanner -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
                     '''
                 }  
             }
         }
+        
         // stage('Sonarqube Analysis') {
         //     steps {
         //             sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://127.0.0.1:9000/ -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social-app \
