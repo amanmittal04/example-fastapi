@@ -46,7 +46,7 @@ pipeline {
             steps {
                 withSonarQubeEnv("${SONARSERVER}") {
                     sh '''
-                        ${scannerHome}/bin/sonar-scanner -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
+                        ${scannerHome}/bin/sonar-scanner -Dsonar.url=http://localhost:9000/ -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
                     '''
                 }  
             }
