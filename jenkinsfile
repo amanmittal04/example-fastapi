@@ -82,6 +82,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'docker-host-root-keys', keyFileVariable: 'SSH_CREDENTIALS')]) {
                 sh """
                     ssh -o StrictHostKeyChecking=no -i $SSH_CREDENTIALS ubuntu@43.204.103.88
+                    pwd
                 """
                 }
             }
