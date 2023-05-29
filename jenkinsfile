@@ -9,6 +9,7 @@ pipeline {
         DOCKER_HUB_USERNAME=credentials('c0b104b8-dd2d-41d1-af4b-18aac98fcd63')
         DOCKER_HUB_ACCESS_TOKEN=credentials('d5ee82e6-c014-4565-ada1-8fb39249079e')
         USER_CRED=credentials('a485edbb-cb73-4beb-b147-ca3722066bd0')
+        SSH_CREDENTIALS = credentials('docker-host-root-keys')
     }
 
     stages {
@@ -76,10 +77,19 @@ pipeline {
         //         // compose-up
         //     }
         // }
-        stage('Deploy'){
-            sshagent(['docker-host-ssh-keys']){
-                sh 'ssh -o StrictHostKeyChecking=no -i docker 43.204.103.88'
+        stage('Deploy') {
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'docker-host-root-keys', keyFileVariable: 'SSH_CREDENTIALS')]) {
+                sh """
+                    ssh -o StrictHostKeyChecking=no -i $SSH_CREDENTIALS ubuntu@43.204.103.88
+                """
+                }
             }
         }
+        // stage('Deploy'){
+        //     sshagent(['docker-host-ssh-keys']){
+        //         sh 'ssh -o StrictHostKeyChecking=no -i docker 43.204.103.88'
+        //     }
+        // }
     }
 } 
