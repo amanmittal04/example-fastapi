@@ -82,7 +82,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'docker-host-root-keys', keyFileVariable: 'SSH_CREDENTIALS')]) {
                 sh """
                     ssh -o StrictHostKeyChecking=no -i $SSH_CREDENTIALS ubuntu@43.204.103.88
-                    pwd
+                    echo $USER_CRED_PSW | sudo -E -S docker-compose down
                 """
                 }
             }
