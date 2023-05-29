@@ -27,22 +27,22 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amanmittal04/example-fastapi.git']])
             }
         }
-        // stage('Sonar Analysis') {
-        //     steps {
-        //         withSonarQubeEnv('sonarserver') {
-        //             sh '''
-        //                 $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
-        //             '''
-        //         }  
-        //     }
-        // }
-        stage('Sonarqube Analysis') {
+        stage('Sonar Analysis') {
             steps {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://127.0.0.1:9000/ -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social-app \
-                            -Dsonar.java.binaries=. \
-                            -Dsonar.projectKey=social-app '''
-                }
+                withSonarQubeEnv('sonarserver') {
+                    sh '''
+                        $SCANNER_HOME/bin/sonar-scanner -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
+                    '''
+                }  
+            }
         }
+        // stage('Sonarqube Analysis') {
+        //     steps {
+        //             sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.url=http://127.0.0.1:9000/ -Dsonar.login=squ_10f9c5ef91471f66d3ba2545387fd5ae445a2406 -Dsonar.projectName=social-app \
+        //                     -Dsonar.java.binaries=. \
+        //                     -Dsonar.projectKey=social-app '''
+        //         }
+        // }
         // stage('OWASP Scan') {
         //     steps {
         //         dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
