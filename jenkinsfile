@@ -82,12 +82,10 @@ pipeline {
                 label 'aws'
             }
             steps {
-
-                    // echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
-                    // echo $USER_CRED_PSW | sudo -E -S docker pull amanmittal04/fastapi:0.1
-                    // echo $USER_CRED_PSW | sudo -E -S docker-compose up -d
                 sh """
-                    sudo docker-compose down
+                    echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
+                    sudo docker pull amanmittal04/fastapi:0.1
+                    sudo docker-compose up -d
                     pwd
                 """
             }
