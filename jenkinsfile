@@ -85,6 +85,7 @@ pipeline {
                     echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
                     echo $USER_CRED_PSW | sudo -E -S docker pull amanmittal04/fastapi:0.1
                     echo $USER_CRED_PSW | sudo -E -S docker-compose up -d
+                    echo pwd
                 """
                 }
             }
