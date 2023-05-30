@@ -24,6 +24,12 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/amanmittal04/example-fastapi.git']])
             }
         }
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install --upgrade pip'
+                sh 'pip install -r requirements.txt'
+            }
+        }
 
         stage('OWASP Scan') {
             steps {
@@ -44,12 +50,6 @@ pipeline {
             }
         }
         
-        stage('Install Dependencies') {
-            steps {
-                sh 'pip install --upgrade pip'
-                sh 'pip install -r requirements.txt'
-            }
-        }
         stage('Testing') {
             steps {
                 sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
