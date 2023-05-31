@@ -31,11 +31,11 @@ pipeline {
             }
         }
 
-        // stage('OWASP Scan') {
-        //     steps {
-        //         dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
-        //     }
-        // }
+        stage('OWASP Scan') {
+            steps {
+                dependencyCheck additionalArguments: '--format HTML', odcInstallation: 'DP-Check'
+            }
+        }
 
         stage('Sonar Analysis') {
             environment{
@@ -50,49 +50,49 @@ pipeline {
             }
         }
         
-        // stage('Testing') {
-        //     steps {
-        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
-        //         sh 'python3 -m pytest'
-        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose down' 
-        //     }
-        // }
-        // stage('Build') {
-        //     steps {
-        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker build -t amanmittal04/fastapi:0.1 .'
-        //     }
-        // }
-        // stage('Login') {
-        //     environment {
-        //         DOCKER_CLIENT_TIMEOUT = '600' 
-        //     }
-        //     steps {
-        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW'
-        //     }
-        // }
-        // stage('Trivy Scan and Push') {
-        //     environment {
-        //         DOCKER_CLIENT_TIMEOUT = '600' 
-        //     }
-        //     steps {
-        //         sh 'echo $USER_CRED_PSW | sudo -E -S trivy image amanmittal04/fastapi:0.1 > trivyReport.txt'
-        //         sh 'echo $USER_CRED_PSW | sudo -E -S docker push amanmittal04/fastapi:0.1'
-        //     }
-        // }
+        stage('Testing') {
+            steps {
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose up -d'
+                sh 'python3 -m pytest'
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker-compose down' 
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker build -t amanmittal04/fastapi:0.1 .'
+            }
+        }
+        stage('Login') {
+            environment {
+                DOCKER_CLIENT_TIMEOUT = '600' 
+            }
+            steps {
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW'
+            }
+        }
+        stage('Trivy Scan and Push') {
+            environment {
+                DOCKER_CLIENT_TIMEOUT = '600' 
+            }
+            steps {
+                sh 'echo $USER_CRED_PSW | sudo -E -S trivy image amanmittal04/fastapi:0.1 > trivyReport.txt'
+                sh 'echo $USER_CRED_PSW | sudo -E -S docker push amanmittal04/fastapi:0.1'
+            }
+        }
 
-        // stage('Deploy') {
-        //     agent {
-        //         label 'aws-jenkins'
-        //     }
-        //     steps {
-        //         sh """
-        //             echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
-        //             sudo docker pull amanmittal04/fastapi:0.1
-        //             sudo docker-compose up -d
-        //             pwd
-        //         """
-        //     }
-        // }
+        stage('Deploy') {
+            agent {
+                label 'aws-jenkins'
+            }
+            steps {
+                sh """
+                    echo $USER_CRED_PSW | sudo -E -S docker login -u $DOCKER_HUB_USERNAME_PSW -p $DOCKER_HUB_ACCESS_TOKEN_PSW
+                    sudo docker pull amanmittal04/fastapi:0.1
+                    sudo docker-compose up -d
+                    pwd
+                """
+            }
+        }
     }
     post {
         always {
