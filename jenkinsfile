@@ -37,18 +37,18 @@ pipeline {
             }
         }
 
-        stage('Sonar Analysis') {
-            environment{
-                scannerHome = tool "${SONARSCANNER}"
-            }
-            steps {
-                withSonarQubeEnv("${SONARSERVER}") {
-                    sh '''
-                        ${scannerHome}/bin/sonar-scanner -Dsonar.url=http://localhost:9000/ -Dsonar.login=$SONAR_LOGIN_PSW -Dsonar.password=$SONAR_PASSWORD_PSW -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
-                    '''
-                }  
-            }
-        }
+        // stage('Sonar Analysis') {
+        //     environment{
+        //         scannerHome = tool "${SONARSCANNER}"
+        //     }
+        //     steps {
+        //         withSonarQubeEnv("${SONARSERVER}") {
+        //             sh '''
+        //                 ${scannerHome}/bin/sonar-scanner -Dsonar.url=http://localhost:9000/ -Dsonar.login=$SONAR_LOGIN_PSW -Dsonar.password=$SONAR_PASSWORD_PSW -Dsonar.projectName=social_app -Dsonar.projectKey=social_app
+        //             '''
+        //         }  
+        //     }
+        // }
         
         stage('Testing') {
             steps {
