@@ -82,7 +82,7 @@ pipeline {
 
         stage('Deploy') {
             agent {
-                label 'aws'
+                label 'aws-jenkins'
             }
             steps {
                 sh """
